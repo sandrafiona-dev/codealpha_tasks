@@ -1,0 +1,58 @@
+# .gitignore — Music Generation AI
+
+# ── Python ────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Virtual Environment ──────────────────────────────────
+venv/
+env/
+.venv/
+
+# ── Model Artefacts (large files) ────────────────────────
+models/*.npy
+models/*.pkl
+models/*.h5
+models/*.keras
+models/*.weights.h5
+models/checkpoints/
+!models/.gitkeep
+
+# ── Outputs ───────────────────────────────────────────────
+outputs/*.mid
+outputs/*.midi
+outputs/*.wav
+outputs/*.mp3
+outputs/*.png
+!outputs/.gitkeep
+
+# ── Logs ──────────────────────────────────────────────────
+logs/*.log
+logs/tensorboard/
+!logs/.gitkeep
+
+# ── Dataset (too large for git) ──────────────────────────
+dataset/*.mid
+dataset/*.midi
+dataset/maestro/
+dataset/nottingham/
+dataset/raw/
+!dataset/README.md
+
+# ── IDE ───────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── OS ────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini

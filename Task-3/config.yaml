@@ -1,0 +1,36 @@
+# config.yaml
+# Central configuration for Music Generation AI
+# Edit these values to tune your experiment without modifying source code.
+
+project:
+  name: Music Generation AI
+  version: 1.0.0
+  seed: 42  # Random seed for reproducibility
+
+dataset:
+  path: dataset/           # Root folder for MIDI files
+  test_split: 0.1          # Fraction reserved for hold-out evaluation
+
+model:
+  sequence_length: 100     # Number of time steps per input sample
+  lstm_units: 512          # Hidden units in each LSTM layer
+  dropout_rate: 0.3        # Dropout probability (regularization)
+  l2_lambda: 0.001         # L2 weight decay coefficient
+
+training:
+  epochs: 50               # Maximum training epochs
+  batch_size: 64           # Samples per gradient update
+  learning_rate: 0.001     # Adam initial learning rate
+  validation_split: 0.2    # Fraction of data for validation
+  early_stopping_patience: 10  # Epochs without improvement before stopping
+
+generation:
+  n_notes: 200             # Number of notes to generate
+  temperature: 1.0         # Sampling temperature (0.5=conservative, 1.5=creative)
+  bpm: 120                 # Output MIDI tempo (beats per minute)
+  note_duration: 0.5       # Duration per note in quarter notes
+  output_path: outputs/output.mid
+
+streamlit:
+  title: Music Generation AI
+  description: Generate original music with a deep learning LSTM model.

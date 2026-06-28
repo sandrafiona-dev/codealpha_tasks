@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AI-powered language translation tool supporting 100+ languages with text-to-speech, copy-to-clipboard, and translation history." />
+    <title>AI Language Translator — Translate 100+ Languages Instantly</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+    <!-- ================================================================ -->
+    <!-- Toast Container                                                   -->
+    <!-- ================================================================ -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- ================================================================ -->
+    <!-- Header                                                            -->
+    <!-- ================================================================ -->
+    <header class="app-header" id="app-header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1 class="app-title">
+                    <span class="title-icon">🌐</span>
+                    <span class="title-text">AI Language Translator</span>
+                </h1>
+                <p class="app-subtitle">Translate text across 100+ languages instantly — powered by AI</p>
+            </div>
+            <div class="header-right">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle theme">
+                    <span class="theme-icon" id="theme-icon">🌙</span>
+                </button>
+                <button class="history-toggle" id="history-toggle" aria-label="Toggle translation history" title="Translation history">
+                    <span>📜</span>
+                    <span class="history-badge" id="history-badge">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================================================================ -->
+    <!-- Main Content                                                      -->
+    <!-- ================================================================ -->
+    <main class="main-content" id="main-content">
+
+        <!-- Language Selector Bar -->
+        <div class="language-bar glass-card" id="language-bar">
+            <div class="lang-select-group">
+                <label for="source-lang" class="lang-label">From</label>
+                <select id="source-lang" class="lang-select" aria-label="Source language">
+                    <option value="Auto-Detect">🔍 Auto-Detect</option>
+                    {% for lang in languages %}
+                    <option value="{{ lang }}">{{ lang }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button class="swap-btn" id="swap-btn" aria-label="Swap languages" title="Swap languages">
+                <span class="swap-icon">⇄</span>
+            </button>
+
+            <div class="lang-select-group">
+                <label for="target-lang" class="lang-label">To</label>
+                <select id="target-lang" class="lang-select" aria-label="Target language">
+                    {% for lang in languages %}
+                    <option value="{{ lang }}" {% if lang == 'Spanish' %}selected{% endif %}>{{ lang }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Translation Panels -->
+        <div class="translation-grid">
+
+            <!-- Input Panel -->
+            <section class="panel glass-card" id="input-panel">
+                <div class="panel-header">
+                    <span class="panel-title">✏️ Source Text</span>
+                    <span class="char-counter" id="char-counter">0 / 5,000</span>
+                </div>
+                <textarea
+                    id="source-text"
+                    class="text-area"
+                    placeholder="Type or paste text here…"
+                    maxlength="5000"
+                    rows="8"
+                    aria-label="Enter text to translate"
+                ></textarea>
+                <div class="panel-actions">
+                    <button class="btn btn-primary" id="translate-btn" aria-label="Translate text">
+                        <span class="btn-icon">🔄</span> Translate
+                    </button>
+                    <button class="btn btn-ghost" id="clear-btn" aria-label="Clear text">
+                        <span class="btn-icon">🗑️</span> Clear
+                    </button>
+                </div>
+            </section>
+
+            <!-- Output Panel -->
+            <section class="panel glass-card" id="output-panel">
+                <div class="panel-header">
+                    <span class="panel-title">📝 Translation</span>
+                    <span class="detected-badge" id="detected-badge" style="display:none;">
+                        🔍 Detected: <span id="detected-lang"></span>
+                    </span>
+                </div>
+                <div class="text-area output-area" id="output-text" aria-live="polite">
+                    <span class="placeholder-text">Translation will appear here…</span>
+                </div>
+
+                <!-- Stats row -->
+                <div class="stats-row" id="stats-row" style="display:none;">
+                    <span class="stat-badge success" id="stat-time">⚡ 0 ms</span>
+                    <span class="stat-badge" id="stat-chars">📊 0 chars</span>
+                </div>
+
+                <div class="panel-actions">
+                    <button class="btn btn-secondary" id="copy-btn" aria-label="Copy translated text" disabled>
+                        <span class="btn-icon">📋</span> Copy
+                    </button>
+                    <button class="btn btn-secondary" id="speak-btn" aria-label="Read translation aloud" disabled>
+                        <span class="btn-icon">🔊</span> Speak
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- ================================================================ -->
+    <!-- History Sidebar                                                   -->
+    <!-- ================================================================ -->
+    <aside class="history-sidebar" id="history-sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">📜 Translation History</h2>
+            <button class="sidebar-close" id="sidebar-close" aria-label="Close history">✕</button>
+        </div>
+        <div class="sidebar-actions">
+            <button class="btn btn-ghost btn-sm" id="clear-history-btn">🗑️ Clear All</button>
+        </div>
+        <div class="history-list" id="history-list">
+            <p class="history-empty" id="history-empty">No translations yet — start translating!</p>
+        </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- ================================================================ -->
+    <!-- Footer                                                            -->
+    <!-- ================================================================ -->
+    <footer class="app-footer" id="app-footer">
+        <p>Built with ❤️ using Python &amp; Flask &nbsp;•&nbsp; CodeAlpha AI Internship</p>
+    </footer>
+
+    <!-- ================================================================ -->
+    <!-- Loading Overlay                                                   -->
+    <!-- ================================================================ -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <p class="loading-text">Translating…</p>
+    </div>
+
+    <div id="app-data" data-languages="{{ language_map | tojson | forceescape }}" style="display: none;"></div>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
